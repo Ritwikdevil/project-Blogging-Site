@@ -2,12 +2,12 @@ const blogModel = require("../models/blogModel")
 const authorModel = require("../models/authorModel")
 
 
-//CreateData
+//CreateData 
 const createBlogs = async function (req, res) {
     try {
         let data = req.body
         let savedData = await blogModel.create(data)
-        res.send({ msg: savedData })
+        res.status(201).send({ msg: savedData })
     } catch (error) {
         res.status(500).send({ status: false, message: error.message })
     }

@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
 
-const AuthorController=require('../controllers/AuthorController')
-const BlogController=require('../controllers/BlogController')
+const authorController=require('../controllers/authorController')
+const blogController=require('../controllers/blogController')
 
 
 //apis:-
+//create apis:-
+router.post('/CreateAuthor',authorController.createAuthor)//createAuthors
+router.post("/createBlog",blogController.createBlogs)//createBlogs
 
-router.post('/CreateAuthor',AuthorController.createAuthor)
-router.post("/createBlog",BlogController.createBlogs)
-
+//get apis:-
+router.get("/getBlog",blogController.getBlogsData)
 module.exports = router;

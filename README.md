@@ -104,7 +104,7 @@ Refer below sample
   status: false,
   msg: ""
 }
-
+```
 ## Collections
 ### Blogs
 

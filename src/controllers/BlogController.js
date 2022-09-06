@@ -71,62 +71,93 @@ const getBlogsData = async function (req, res) {
         res.status(500).send({ status: false, message: error.message })
     }
 }
+//PUT /blogs/:blogId
+const updateBlog = async function (req, res) {
+    try {
+        const blogId = req.params.blogId;
+        if (!isValidObjectId(blogId)) {
+            return res.status(400).send({ status: false, message: "Invalid blog id" })
+        }
+        const reqBody = req.body;
+        const { title, body, tags, subcategory } = reqBody;
 
-const updateBlog  = async function (req, res) {
-    const blogId = req.params.blogId;
-    if(!isValidObjectId(blogId)){
-        return res.status(400).send({ status: false, message: "Invalid blog id" })
+        let isUpdateRequired = false
+        const updateQuery = {
+            $set: {},
+            $push: {}
+        };
+
+        if (isValid(title)) {
+            updateQuery['$set']['title'] = title
+            isUpdateRequired = true
+        }
+
+        if (isValid(body)) {
+            updateQuery['$set']['body'] = body
+            isUpdateRequired = true
+        }
+
+        if (isValid(tags)) {
+            updateQuery['$push']['tags'] = tags
+            isUpdateRequired = true
+        }
+
+        if (isValid(subcategory)) {
+            updateQuery['$push']['subcategory'] = subcategory
+            isUpdateRequired = true
+        }
+
+        if (isUpdateRequired) {
+            updateQuery['$set']['isPublished'] = true
+            updateQuery['$set']['publishedAt'] = new Date()
+        }
+
+        const updatedBlog = await blogModel.findOneAndUpdate(
+            {
+                _id: blogId,
+                isDeleted: false
+            },
+            updateQuery,
+            { new: true },
+        )
+
+        if (!updatedBlog) {
+            return res.status(400).send({ status: false, message: "Blog not found" })
+        }
+
+        return res.status(200).send({ status: true, message: 'Blog Updated Successfully', data: updatedBlog })
+    } catch (error) {
+        res.status(500).send({ status: false, message: error.message })
     }
-    const reqBody = req.body;
-    const { title, body, tags, subcategory } = reqBody;
+}
+
+// DELETE /blogs/:blogId
+const deleteBlogs = async function (req, res) {
+    try {
+        const requestBody = req.body 
+        const params = req.params 
+        const blogId = params.blogId
+        if (!isValidObjectId(blogId)) {
+            return res.status(400).send({ status: false, message: "Invalid blog id" })
+        }
+        const blog = await blogModel.findOne({_id: blogId , isDeleted : false , deletedAt : null})
+
+        if(!blog){
+            res.status(404).send({ status: false, message: 'blog does not found '})
+            return
+        }
+        await blogModel.findOneAndUpdate({ _id: blogId }, { $set: { isDeleted: true, deletedAt: new Date() },new: true })
+
+        res.status(200).send({ status: true, msg: 'Blog deleted succesfully' })
     
-    let isUpdateRequired = false
-    const updateQuery = {
-        $set: {},
-        $push: {}
-    };
-
-    if (isValid(title)) {
-        updateQuery['$set']['title'] = title
-        isUpdateRequired = true
+  
+    } catch (error) {
+        res.status(500).send({ status: false, message: error.message })
     }
 
-    if (isValid(body)) {
-        updateQuery['$set']['body'] = body
-        isUpdateRequired = true
-    }
-
-    if (isValid(tags)) {
-        updateQuery['$push']['tags'] = tags
-        isUpdateRequired = true
-    }
-
-    if (isValid(subcategory)) {
-        updateQuery['$push']['subcategory'] = subcategory
-        isUpdateRequired = true
-    }
-
-    if(isUpdateRequired){
-        updateQuery['$set']['published'] = true
-        updateQuery['$set']['publishedAt'] = new Date()
-    }
-
-    const updatedBlog = await blogModel.findOneAndUpdate(
-        {
-            _id: blogId,
-            isDeleted: false
-        },
-        updateQuery,
-        { new: true },
-    )
-
-    if(!updatedBlog){
-        return res.status(400).send({ status: false, message: "Blog not found" })
-    }
-
-    return res.status(200).send({ status: true, message: 'Blog Updated Successfully', data: updatedBlog })
 }
 
 module.exports.createBlogs = createBlogs
 module.exports.getBlogsData = getBlogsData
 module.exports.updateBlog = updateBlog
+module.exports.deleteBlogs = deleteBlogs

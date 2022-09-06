@@ -30,7 +30,7 @@ const getBlogsData = async function (req, res) {
         
         if (authorid) {
             if (!authorid) return res.status(404).send({ status: false, message: "No Doc Found" })
-            let data = await blogModel.find({ isDelete: false } && { isPublished: true } && { authorids: authorid })
+            let data = await blogModel.find({ isDelete: false } && { isPublished: true } && { authorid: authorid })
             if (data == []) return res.send({ status: false, msg: "data not available" })
             return res.status(200).send({ status: true, data: data })
         }

@@ -1,32 +1,4 @@
-<<<<<<< HEAD
-# BlogSiteMiniGroup
 
- let authorid = req.query.authorId
-        let category = req.query.category
-        let tags = req.query.tags
-        let subcategory = req.query.subcategory
-
-        if (authorid) {
-            if (!authorid) return res.status(404).send({ status: false, message: "No Doc Found" })
-            let data = await blogModel.find({ isDelete: false } && { isPublished: true } && { authorid: authorid })
-            if (data == []) return res.send({ status: false, msg: "data not available" })
-            return res.status(200).send({ status: true, data: data })
-        }
-        if (category) {
-            let data = await blogModel.find({ isDelete: false } && { isPublished: true } && { category: true })
-            if (data == []) return res.send({ status: false, msg: "data not available" })
-            return res.status(200).send({ status: true, data: data })
-        }
-        if (tags) {
-            let data = await blogModel.find({ isDelete: false } && { isPublished: true } && { tags: true })
-            if (data == []) return res.send({ status: false, msg: "data not available" })
-            return res.status(200).send({ status: true, data: data })
-        }
-        if (subcategory) {
-            let data = await blogModel.find({ isDelete: false } && { isPublished: true } && { subcategory: true })
-            if (data == []) return res.send({ status: false, msg: "data not available" })
-            return res.status(200).send({ status: true, data: data })
-=======
 # BlogSiteMiniGroup47
 # Plutonium
 

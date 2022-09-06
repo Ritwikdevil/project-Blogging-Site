@@ -72,6 +72,61 @@ const getBlogsData = async function (req, res) {
     }
 }
 
+const updateBlog  = async function (req, res) {
+    const blogId = req.params.blogId;
+    if(!isValidObjectId(blogId)){
+        return res.status(400).send({ status: false, message: "Invalid blog id" })
+    }
+    const reqBody = req.body;
+    const { title, body, tags, subcategory } = reqBody;
+    
+    let isUpdateRequired = false
+    const updateQuery = {
+        $set: {},
+        $push: {}
+    };
+
+    if (isValid(title)) {
+        updateQuery['$set']['title'] = title
+        isUpdateRequired = true
+    }
+
+    if (isValid(body)) {
+        updateQuery['$set']['body'] = body
+        isUpdateRequired = true
+    }
+
+    if (isValid(tags)) {
+        updateQuery['$push']['tags'] = tags
+        isUpdateRequired = true
+    }
+
+    if (isValid(subcategory)) {
+        updateQuery['$push']['subcategory'] = subcategory
+        isUpdateRequired = true
+    }
+
+    if(isUpdateRequired){
+        updateQuery['$set']['published'] = true
+        updateQuery['$set']['publishedAt'] = new Date()
+    }
+
+    const updatedBlog = await blogModel.findOneAndUpdate(
+        {
+            _id: blogId,
+            isDeleted: false
+        },
+        updateQuery,
+        { new: true },
+    )
+
+    if(!updatedBlog){
+        return res.status(400).send({ status: false, message: "Blog not found" })
+    }
+
+    return res.status(200).send({ status: true, message: 'Blog Updated Successfully', data: updatedBlog })
+}
 
 module.exports.createBlogs = createBlogs
 module.exports.getBlogsData = getBlogsData
+module.exports.updateBlog = updateBlog

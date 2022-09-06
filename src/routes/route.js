@@ -6,9 +6,12 @@ const blogController=require('../controllers/blogController')
 
 
 //apis:-
-//create apis:-
+
 router.post('/CreateAuthor',authorController.createAuthor)//createAuthors
 router.post("/createBlog",blogController.createBlogs)//createBlogs
+router.put("/blogs/:blogId",blogController.updateBlog)//updateBlog
+router.delete("/deleteBlogs/:blogId",blogController.deleteBlogs)//deleteBlogsblogs?queryParams
+router.delete("/deleteBlogs",blogController.deleteBlogsBycategory)//deleteBlogsblogs?queryParams
 
 //get apis:-
 router.get("/getBlog",blogController.getBlogsData)

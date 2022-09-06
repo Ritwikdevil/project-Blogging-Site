@@ -27,7 +27,7 @@ const getBlogsData = async function (req, res) {
         let category = req.query.category
         let tags = req.query.tags
         let subcategory = req.query.subcategory
-
+        
         if (authorid) {
             if (!authorid) return res.status(404).send({ status: false, message: "No Doc Found" })
             let data = await blogModel.find({ isDelete: false } && { isPublished: true } && { authorids: authorid })

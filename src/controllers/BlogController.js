@@ -153,8 +153,8 @@ const deleteBlogs = async function (req, res) {
 
 }
 
-
-const deleteBlogsBycategory=async function(req,res){
+// DELETE /blogs?queryParams
+const deleteBlogsByFilter=async function(req,res){
         try {
             let obj = req.query
             let { authorId, category, tags, subcategory, isPublished } = obj
@@ -193,4 +193,4 @@ module.exports.createBlogs = createBlogs
 module.exports.getBlogsData = getBlogsData
 module.exports.updateBlog = updateBlog
 module.exports.deleteBlogs = deleteBlogs
-module.exports.deleteBlogsBycategory = deleteBlogsBycategory
+module.exports.deleteBlogsByFilter = deleteBlogsByFilter

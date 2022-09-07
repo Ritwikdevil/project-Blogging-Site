@@ -41,7 +41,8 @@ const loginAuthor=async function(req,res){
         authorId:author._id.toString(),
         Group:"47",
     },
-    "tokensecretKey")
+    "tokensecretKey"
+    );
 
     res.header("x-api-key",token)
     res.status(200).send({status:true,msg:"token created successfully",token})

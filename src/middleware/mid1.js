@@ -14,14 +14,13 @@ const authentication = async function (req, res,next) {
     catch(error){
         res.status(500).send({status:false,msg:error.msg,msg:"hi"})
     }
-
 }
 
 const authorization = async function (req, res, next) {
     try {
         let token = req.headers['x-api-key']
         let ObjectID = mongoose.Types.ObjectId
-        let decodedToken = jwt.verify(token, "Blogging-Site")
+        let decodedToken = jwt.verify(token, "Blogging")
         if (req.query.authorId) {
             let authorId = req.query.authorId
             if (!ObjectID.isValid(authorId)) { return res.status(400).send({ status: false, message: "Not a valid AuthorID" }) }
@@ -48,8 +47,6 @@ const authorization = async function (req, res, next) {
         res.status(500).send({ status: false, message: error.message })
     }
 }
-
-
 
 module.exports.authentication=authentication
 module.exports.authorization=authorization

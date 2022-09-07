@@ -57,7 +57,7 @@ const getBlogsData = async function (req, res) {
                 filterQuery.tags = tags
             }
             if (isValid(subcategory)) {
-                filterQuery.tags = subcategory
+                filterQuery.subcategory = subcategory
             }
         }
         const Blogs = await blogModel.find(filterQuery)
@@ -133,8 +133,9 @@ const updateBlog = async function (req, res) {
 // DELETE /blogs/:blogId
 const deleteBlogs = async function (req, res) {
     try {
-        const blogId = req.params.blogId
-        //const  = params.blogId
+        const requestBody=req.body
+        const params = req.params
+        const blogId = params.blogId
         if (!isValidObjectId(blogId)) {
             return res.status(400).send({ status: false, message: "Invalid blog id" })
         }

@@ -26,6 +26,13 @@ const createBlogs = async function (req, res) {
 
         //checking valid author id by collection
         let authorId = req.body.authorId
+        if (!isValid(authorId)) {
+            return res.status(400).send({ status: false, message: 'author id  is required' })
+        }
+        if (!isValidObjectId(authorId)) {
+            return res.status(400).send({ status: false, message: `${authorId}is not a valid author id` })
+        }
+
         let checkAuthor = await authorModel.findById(authorId)
         if (!checkAuthor) {
             return res.status(400).send({ status: false, msg: "please provide valid author id" })
@@ -142,7 +149,6 @@ const deleteBlogs = async function (req, res) {
         const blog = await blogModel.findOne({ _id: blogId, isDeleted: false })
         if (!blog) {
             return  res.status(404).send({ status: false, message: 'blog does not found ' })
-           
         }
         //for blog delete
         await blogModel.findOneAndUpdate({ _id: blogId }, { $set: { isDeleted: true, deletedAt: new Date() }, new: true })
@@ -168,7 +174,7 @@ const deleteBlogsByFilter=async function(req,res){
                     return res.status(400).send({ status: false, message: "Not a valid Author ID" })
                 }
             }
-            let filter = { isDeleted: false }
+            let filter = { isDeleted: false,deletedAt: null }
             if (authorId != null) { filter.authorId = authorId }
             if (category != null) { filter.category = category }
             if (tags != null) { filter.tags = { $in: [tags] } }

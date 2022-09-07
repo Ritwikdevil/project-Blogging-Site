@@ -8,10 +8,10 @@ const mid=require('../middleware/mid1')
 //apis:-
 
 router.post('/CreateAuthor',authorController.createAuthor)//createAuthors
-router.post("/createBlog",mid.validation,blogController.createBlogs)//createBlogs
-router.put("/blogs/:blogId",mid.validation,blogController.updateBlog)//updateBlog
-router.delete("/deleteBlogs/:blogId",mid.validation,blogController.deleteBlogs)//deleteBlogs
-router.delete("/deleteBlogs",mid.validation,blogController.deleteBlogsByFilter)//deleteBlogsByFilter
+router.post("/createBlog",mid.authentication,blogController.createBlogs)//createBlogs
+router.put("/blogs/:blogId",mid.authentication,mid.authorization,blogController.updateBlog)//updateBlog
+router.delete("/deleteBlogs/:blogId",mid.authentication,mid.authorization,blogController.deleteBlogs)//deleteBlogs
+router.delete("/deleteBlogs",mid.authentication,mid.authorization,blogController.deleteBlogsByFilter)//deleteBlogsByFilter
 
 
 //login

@@ -11,6 +11,10 @@ const isValid = function (value) {
 const isValidEmail=function(email){
     return (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
 }
+const regexValidator=function(value){
+    let regex= /^[a-zA-Z]+([\s][a-zA-Z]+)*$/
+    return regex.test(value)
+}
   
 //CreateAuthor
 const createAuthor = async function (req, res) {

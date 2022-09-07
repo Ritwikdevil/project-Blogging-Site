@@ -5,14 +5,14 @@ const authentication = async function (req, res,next) {
     let token = req.headers["x-api-key"];
     if(!token) return res.status(403).send({status:false,msg:"token must be present in header"})
 
-    let decodetoken=jwt.verify(token,"tokensecretKey")
-    if(!decodetoken) return res.status(403).send({status:false,msg:"Token is Invalid, Enter Correct Token"})
+    let decodedToken=jwt.verify(token,"tokensecretKey")
+    if(!decodedToken) return res.status(403).send({status:false,msg:"Token is Invalid, Enter Correct Token"})
     console.log(token)
-    req.authorId=decodetoken.authorId
+    req.authorId=decodedToken.authorId
     next();
     }
     catch(error){
-        res.status(500).send({status:false,msg:error.msg,msg:"hi"})
+        res.status(500).send({status:false,msg:error.message})
     }
 
 }
@@ -21,7 +21,7 @@ const authorization = async function (req, res, next) {
     try {
         let token = req.headers['x-api-key']
         let ObjectID = mongoose.Types.ObjectId
-        let decodedToken = jwt.verify(token, "Blogging-Site")
+        let decodedToken = jwt.verify(token, "tokensecretKey")
         if (req.query.authorId) {
             let authorId = req.query.authorId
             if (!ObjectID.isValid(authorId)) { return res.status(400).send({ status: false, message: "Not a valid AuthorID" }) }
@@ -45,7 +45,7 @@ const authorization = async function (req, res, next) {
         }
     }
     catch (error) {
-        res.status(500).send({ status: false, message: error.message })
+        res.status(500).send({ status: false, message: error.message})
     }
 }
 

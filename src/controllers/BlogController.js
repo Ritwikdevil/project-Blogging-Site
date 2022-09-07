@@ -174,7 +174,7 @@ const deleteBlogsByFilter=async function(req,res){
                     return res.status(400).send({ status: false, message: "Not a valid Author ID" })
                 }
             }
-            let filter = { isDeleted: false,deletedAt: null }
+            let filter = { isDeleted: false }
             if (authorId != null) { filter.authorId = authorId }
             if (category != null) { filter.category = category }
             if (tags != null) { filter.tags = { $in: [tags] } }

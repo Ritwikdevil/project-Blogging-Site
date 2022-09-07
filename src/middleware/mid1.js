@@ -1,31 +1,30 @@
-let jwt=require('jsonwebtoken')
-let mongoose=require('mongoose')
+let jwt = require('jsonwebtoken')
+let mongoose = require('mongoose')
 const blogModel = require("../models/blogModel")
 
-const authentication = async function (req, res,next) {
-    try{
-    let BodyauthorId=req.body.authorId
-    let token = req.headers["x-api-key"];
-    if(!token) return res.status(403).send({status:false,msg:"token must be present in header"})
+const authentication = async function (req, res, next) {
+    try {
+        let BodyauthorId = req.body.authorId
+        let token = req.headers["x-api-key"];
+        if (!token) return res.status(403).send({ status: false, msg: "token must be present in header" })
 
-    let decodedToken=jwt.verify(token,"tokensecretKey")
-    if(!decodedToken) return res.status(403).send({status:false,msg:"Token is Invalid, Enter Correct Token"})
-    console.log(token)
-    if(BodyauthorId!=decodedToken.authorId) return res.status(404).send({status:false,msg:"You Are Not Applicable"})
-    console.log("authorid---",req.body.authorId)
-    console.log("decodedid---",decodedToken.authorId)
-        //isvalid
-    next();
+        let decodedToken = jwt.verify(token, "tokensecretKey")
+        if (!decodedToken) return res.status(403).send({ status: false, msg: "Token is Invalid, Enter Correct Token" })
+        console.log(token)
+        if (BodyauthorId != decodedToken.authorId) return res.status(404).send({ status: false, msg: "You Are Not Applicable" })
+        console.log("authorid---", req.body.authorId)
+        console.log("decodedid---", decodedToken.authorId)
+        next();
     }
-    catch(error){
-        res.status(500).send({status:false,msg:error.message})
+    catch (error) {
+        res.status(500).send({ status: false, msg: error.message })
     }
 }
 
 const authorization = async function (req, res, next) {
     try {
         let token = req.headers['x-api-key']
-        if(!token) return res.status(403).send({status:false,msg:"token must be present in header"})
+        if (!token) return res.status(403).send({ status: false, msg: "token must be present in header" })
 
         let ObjectID = mongoose.Types.ObjectId
         let decodedToken = jwt.verify(token, "tokensecretKey")
@@ -52,36 +51,34 @@ const authorization = async function (req, res, next) {
         }
     }
     catch (error) {
-        res.status(500).send({ status: false, message: error.message})
+        res.status(500).send({ status: false, message: error.message })
     }
 }
 
-// const authorization1 = async function (req, res, next) {
-//     try {
-//         let token = req.headers['x-api-key']
-//         if(!token) return res.status(403).send({status:false,msg:"token must be present in header"})
+const authorization1 = async function (req, res, next) {
+    try {
+        let token = req.headers['x-api-key']//token
+        let query=req.query//allQueries
+        if(!query)  return res.status(403).send({ status: false, msg: "Query must be present in Param" })
+        if (!token) return res.status(403).send({ status: false, msg: "token must be present in header" })
 
-//         let ObjectID = mongoose.Types.ObjectId
-//         let decodedToken = jwt.verify(token, "tokensecretKey")
-//         if (req.query.authorId) {
-//             let authorId = req.query.authorId
-//             if (!ObjectID.isValid(authorId)) { return res.status(400).send({ status: false, message: "Not a valid AuthorID" }) }
-//             if (authorId != decodedToken.authorId) {
-//                 return res.status(403).send({ status: false, message: "You are not a authorized user" })
-//             }
-//             return next()
-//         }
-//         let AuthorId=decodedToken.authorId
-//         if (AuthorId) {
-//             let check = await blogModel.findById(AuthorId)
-//             if (!check) { return res.status(404).send({ status: false, message: "No such blog exists" }) }
-//             return next()
-//         }
-//     }
-//     catch (error) {
-//         res.status(500).send({ status: false, message: error.message})
-//     }
-// }
+        let decodedToken = jwt.verify(token, "tokensecretKey")
+        const blog=await blogModel.findOne({...query})
+        if(!blog) return res.status(404).send({status:false,msg:"blog is not found"})
 
-module.exports.authentication=authentication
-module.exports.authorization=authorization
+        let headerId=decodedToken.authorId.toString() //headerid
+        let blogId=blog.authorId.toString()//blogId
+        console.log("headerId--",headerId)
+        console.log("decodedId---",blogId)
+        if (headerId!=blogId) return res.status(403).send({status:false,msg:"You Are Not Authorized"})
+         next()
+         return
+    }
+    catch (error) {
+        res.status(500).send({ status: false, message: error.message })
+    }
+}
+
+module.exports.authentication = authentication
+module.exports.authorization = authorization
+module.exports.authorization1=authorization1

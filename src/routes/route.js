@@ -11,7 +11,7 @@ router.post('/CreateAuthor', authorController.createAuthor)//createAuthors
 router.post("/createBlog", mid.authentication, blogController.createBlogs)//createBlogs
 router.put("/blogs/:blogId",mid.authorization, blogController.updateBlog)//updateBlog
 router.delete("/deleteBlogs/:blogId", mid.authorization, blogController.deleteBlogs)//deleteBlogs
-router.delete("/deleteBlogs", mid.authorization, blogController.deleteBlogsByFilter)//deleteBlogsByFilter
+router.delete("/deleteBlogs", mid.authorization1, blogController.deleteBlogsByFilter)//deleteBlogsByFilter
 
 
 //login

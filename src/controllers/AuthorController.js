@@ -25,15 +25,22 @@ const createAuthor = async function (req, res) {
         let requestBody = req.body
         if (!isValidRequestBody(requestBody)) return res.status(400).send({ status: false, msg: 'invalid request parameters.Please provid author details ' })
         const { fname, lname, title, email, password } = requestBody;
+
         if (!isValid(fname)) return res.status(400).send({ status: false, msg: 'first name is required' })
+        if (!regexValidator(fname)) return res.status(400).send({ status: false, msg: 'first name should be a valid fname' })
+
         if (!isValid(lname)) return res.status(400).send({ status: false, msg: 'last name is required' })
+        if (!regexValidator(lname)) return res.status(400).send({ status: false, msg: 'last name should be a valid lname' })
+
         if (!isValid(title)) return res.status(400).send({ status: false, msg: 'title is required' })
         if (!isValidTitle(title)) return res.status(400).send({ status: false, msg: 'title should be among Mr,Mrs,Miss' })
+
         if (!isValid(email)) return res.status(400).send({ status: false, msg: 'email is required' })
-        if (!isValidEmail(email)) {
-            return res.status(400).send({ status: false, msg: 'email should be avalid email address' })
-        }
+        if (!isValidEmail(email))  return res.status(400).send({ status: false, msg: 'email should be avalid email address' })
+        
+
         if (!isValid(password)) return res.status(400).send({ status: false, msg: 'password is required' })
+        
         //now create the author:-
         let savedData = await authorModel.create(requestBody)
         res.status(201).send({ msg: savedData })

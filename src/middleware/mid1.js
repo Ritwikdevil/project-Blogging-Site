@@ -54,7 +54,7 @@ const authorization = async function (req, res, next) {
         res.status(500).send({ status: false, message: error.message })
     }
 }
-
+//authorization for //deleteBlogsByFilter api
 const authorization1 = async function (req, res, next) {
     try {
         let token = req.headers['x-api-key']//token

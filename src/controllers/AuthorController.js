@@ -15,12 +15,27 @@ const regexValidator=function(value){
     let regex= /^[a-zA-Z]+([\s][a-zA-Z]+)*$/
     return regex.test(value)
 }
+const isValidTitle = function (title) {
+    return ['Mr', 'Mrs', 'Miss'].indexOf(title) !== -1
+  }
   
 //CreateAuthor
 const createAuthor = async function (req, res) {
     try {
-        let data = req.body
-        let savedData = await authorModel.create(data)
+        let requestBody  = req.body
+        if (!isValidRequestBody(requestBody)) return res.status(400).send({ status: false, msg: 'invalid request parameters.Please provid author details ' })
+        const { fname, lname, title, email, password } = requestBody;
+        if (!isValid(fname)) return res.status(400).send({ status: false, msg: 'first name is required' })
+        if (!isValid(lname)) return res.status(400).send({ status: false, msg: 'last name is required' })
+        if (!isValid(title)) return res.status(400).send({ status: false, msg: 'title is required' })
+        if (!isValidTitle(title)) return res.status(400).send({ status: false, msg: 'title should be among Mr,Mrs,Miss' })
+        if (!isValid(email)) return res.status(400).send({ status: false, msg: 'email is required' })
+     if(! isValidEmail(email)) {
+        return res.status(400).send({ status: false, msg: 'email should be avalid email address' })
+      }
+      if (!isValid(password)) return res.status(400).send({ status: false, msg: 'password is required' })
+//now create the author:-
+        let savedData = await authorModel.create(requestBody)
         res.status(201).send({ msg: savedData })
     } catch (error) {
         res.status(500).send({ status: false, message: error.message })

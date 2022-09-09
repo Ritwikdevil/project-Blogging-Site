@@ -19,7 +19,7 @@ const isValidObjectId = function (objectId) {
 const createBlogs = async function (req, res) {
     try {
         let requestBody = req.body
-        if (!isValidRequestBody(data)) {
+        if (!isValidRequestBody(requestBody)) {
             return res.status(400).send({ status: false, message: 'Invalid request parameters. please provide blog details' })
 
         }

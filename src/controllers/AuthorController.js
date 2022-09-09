@@ -11,6 +11,9 @@ const isValidRequestBody = function (requestBody) {
 const isValidEmail = function (email) {
     return (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
 }
+const isValidPassword = function (password) {
+    return (/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/.test(password))
+}
 const regexValidator = function (value) {
     let regex = /^[a-zA-Z]+([\s][a-zA-Z]+)*$/
     return regex.test(value)
@@ -36,11 +39,14 @@ const createAuthor = async function (req, res) {
         if (!isValidTitle(title)) return res.status(400).send({ status: false, msg: 'title should be among Mr,Mrs,Miss' })
 
         if (!isValid(email)) return res.status(400).send({ status: false, msg: 'email is required' })
-        if (!isValidEmail(email))  return res.status(400).send({ status: false, msg: 'email should be avalid email address' })
-        
+        if (!isValidEmail(email)) return res.status(400).send({ status: false, msg: 'email should be avalid email address' })
+
 
         if (!isValid(password)) return res.status(400).send({ status: false, msg: 'password is required' })
-        
+        if (!isValidPassword(password)) return res.status(400).send({ status: false, msg: 'Enter a valid password' })
+        let Data = await authorModel.findOne({ email: email })
+        if (Data) return res.status(400).send({ status: false, msg: 'Duplicate email' })
+
         //now create the author:-
         let savedData = await authorModel.create(requestBody)
         res.status(201).send({ msg: savedData })
@@ -53,15 +59,15 @@ const createAuthor = async function (req, res) {
 const loginAuthor = async function (req, res) {
     try {
         let reqBody = req.body
-        let user = req.body.email
+        let userId = req.body.email
         let password = req.body.password
         if (!isValidRequestBody(reqBody)) return res.status(400).send({ status: false, msg: "enter some data in body" })
-        if (!isValid(user)) return res.status(400).send({ status: false, msg: "email is required" })
+        if (!isValid(userId)) return res.status(400).send({ status: false, msg: "email is required" })
         if (!isValid(password)) return res.status(400).send({ status: false, msg: "password is required" })
 
-        if (!isValidEmail(user)) return res.status(400).send({ status: false, msg: "Provide Valid Email-Id" })
-        let author = await authorModel.findOne({ user, password });
-        if (!author) return res.status(400).send({ status: false, msg: "User Password Not Correct" })
+        if (!isValidEmail(userId)) return res.status(400).send({ status: false, msg: "Provide Valid Email-Id" })
+        let author = await authorModel.findOne({ userId, password });
+        if (!author) return res.status(400).send({ status: false, msg: "UserId and Password Not Correct" })
 
         let token = jwt.sign({
             authorId: author._id.toString(),

@@ -9,7 +9,7 @@ const mid = require('../middleware/mid1')
 
 router.post('/CreateAuthor', authorController.createAuthor)//createAuthors
 router.post("/createBlog", mid.authentication, blogController.createBlogs)//createBlogs
-router.put("/blogs/:blogId",mid.authorization, blogController.updateBlog)//updateBlog
+router.put("/blogs/:blogId", mid.authorization, blogController.updateBlog)//updateBlog
 router.delete("/deleteBlogs/:blogId", mid.authorization, blogController.deleteBlogs)//deleteBlogs
 router.delete("/deleteBlogs", mid.authorization1, blogController.deleteBlogsByFilter)//deleteBlogsByFilter
 
@@ -18,5 +18,5 @@ router.delete("/deleteBlogs", mid.authorization1, blogController.deleteBlogsByFi
 router.post("/login", authorController.loginAuthor)
 
 //get apis:-
-router.get("/getBlog", blogController.getBlogsData)
+router.get("/getBlog", mid.authentication, blogController.getBlogsData)
 module.exports = router;

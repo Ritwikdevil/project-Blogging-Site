@@ -20,15 +20,15 @@ const authorSchema = new mongoose.Schema({
                         validator: function (email) {
                                 return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
                         }, msg: 'please fill a valid email address', isAsync: false
-                }  
-                
-        },
-                password: {
-                        type: String,
-                        required: true
                 }
-        
-},{ timestamps: true });
+
+        },
+        password: {
+                type: String,
+                required: true
+        }
+
+}, { timestamps: true });
 
 
 

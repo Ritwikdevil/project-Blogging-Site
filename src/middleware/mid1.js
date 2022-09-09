@@ -4,20 +4,16 @@ const blogModel = require("../models/blogModel")
 
 const authentication = async function (req, res, next) {
     try {
-        let BodyauthorId = req.body.authorId
-        let token = req.headers["x-api-key"];
-        if (!token) return res.status(403).send({ status: false, msg: "token must be present in header" })
-
-        let decodedToken = jwt.verify(token, "tokensecretKey")
-        if (!decodedToken) return res.status(403).send({ status: false, msg: "Token is Invalid, Enter Correct Token" })
-        console.log(token)
-        if (BodyauthorId != decodedToken.authorId) return res.status(404).send({ status: false, msg: "You Are Not Applicable" })
-        console.log("authorid---", req.body.authorId)
-        console.log("decodedid---", decodedToken.authorId)
-        next();
-    }
-    catch (error) {
-        res.status(500).send({ status: false, msg: error.message })
+        token = req.headers['x-api-key']
+        if (!token) { return res.status(400).send({ status: false, message: "Token is missing" }) }
+        decodedToken = jwt.verify(token, "tokensecretKey", (err, decode) => {
+            if (err) {
+                return res.status(400).send({ status: false, message: "Token is not correct!" })
+            } (decode == true)
+            next()
+        })
+    } catch (error) {
+        res.status(500).send({ status: false, message: error.message })
     }
 }
 
@@ -54,25 +50,25 @@ const authorization = async function (req, res, next) {
         res.status(500).send({ status: false, message: error.message })
     }
 }
-//authorization for //deleteBlogsByFilter api
+// //authorization for //deleteBlogsByFilter api
 const authorization1 = async function (req, res, next) {
     try {
         let token = req.headers['x-api-key']//token
-        let query=req.query//allQueries
-        if(!query)  return res.status(403).send({ status: false, msg: "Query must be present in Param" })
+        let query = req.query//allQueries
+        if (!query) return res.status(403).send({ status: false, msg: "Query must be present in Param" })
         if (!token) return res.status(403).send({ status: false, msg: "token must be present in header" })
 
         let decodedToken = jwt.verify(token, "tokensecretKey")
-        const blog=await blogModel.findOne({...query})
-        if(!blog) return res.status(404).send({status:false,msg:"blog is not found"})
+        const blog = await blogModel.findOne({ ...query })
+        if (!blog) return res.status(404).send({ status: false, msg: "blog is not found" })
 
-        let headerId=decodedToken.authorId.toString() //headerid
-        let blogId=blog.authorId.toString()//blogId
-        console.log("headerId--",headerId)
-        console.log("decodedId---",blogId)
-        if (headerId!=blogId) return res.status(403).send({status:false,msg:"You Are Not Authorized"})
-         next()
-         return
+        let headerId = decodedToken.authorId.toString() //headerid
+        let blogId = blog.authorId.toString()//blogId
+        console.log("headerId--", headerId)
+        console.log("decodedId---", blogId)
+        if (headerId != blogId) return res.status(403).send({ status: false, msg: "You Are Not Authorized" })
+        next()
+        return
     }
     catch (error) {
         res.status(500).send({ status: false, message: error.message })
@@ -81,4 +77,4 @@ const authorization1 = async function (req, res, next) {
 
 module.exports.authentication = authentication
 module.exports.authorization = authorization
-module.exports.authorization1=authorization1
+module.exports.authorization1 = authorization1

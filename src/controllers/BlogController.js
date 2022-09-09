@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const blogModel = require("../models/blogModel")
 const authorModel = require("../models/authorModel")
 
+//validation functions :---
 const isValid = function (value) {
     if (typeof value === 'undefined' || value === null) return false
     if (typeof value === 'string' && value.length === 0) return false
@@ -15,6 +16,7 @@ const isValidRequestBody = function (requestBody) {
 const isValidObjectId = function (objectId) {
     return mongoose.Types.ObjectId.isValid(objectId)
 }
+
 //Createblogsdata//post
 const createBlogs = async function (req, res) {
     try {
@@ -24,7 +26,7 @@ const createBlogs = async function (req, res) {
 
         }
         const { title, body, authorId, tags, category, subcategory, isPublished } = requestBody;
-        //checking valid author id by collection
+
         if (!isValid(title)) {
             return res.status(400).send({ status: false, message: 'Blog title is required' })
 
@@ -56,7 +58,7 @@ const createBlogs = async function (req, res) {
     }
 
 }
-//Get Blog Data-- are not deleted and published
+//Get Blog Data-- (which are not deleted and published) :---
 const getBlogsData = async function (req, res) {
     try {
         const filterQuery = { isDeleted: false, isPublished: true }
@@ -89,7 +91,7 @@ const getBlogsData = async function (req, res) {
         res.status(500).send({ status: false, message: error.message })
     }
 }
-//PUT /blogs/:blogId
+//update the blogs  data 
 const updateBlog = async function (req, res) {
     try {
         const blogId = req.params.blogId;
@@ -149,7 +151,7 @@ const updateBlog = async function (req, res) {
     }
 }
 
-// DELETE /blogs/:blogId
+// DELETE /blogs/:blogId (delete blogs by path param):----
 const deleteBlogs = async function (req, res) {
     try {
         const requestBody = req.body
@@ -172,7 +174,7 @@ const deleteBlogs = async function (req, res) {
 
 }
 
-// DELETE /blogs?queryParams
+// DELETE /blogs?queryParams (delete blogs by query param):---
 const deleteBlogsByFilter = async function (req, res) {
     try {
         let obj = req.query
@@ -186,20 +188,20 @@ const deleteBlogsByFilter = async function (req, res) {
                 return res.status(400).send({ status: false, message: "Not a valid Author ID" })
             }
         }
-        let filter = { isDeleted: false }
+        let filter = { isDeleted: false, isPublished: false }
         if (authorId != null) { filter.authorId = authorId }
         if (category != null) { filter.category = category }
         if (tags != null) { filter.tags = { $in: [tags] } }
         if (subcategory != null) { filter.subcategory = { $in: [subcategory] } }
-        if (isPublished != null) { filter.isPublished = isPublished }
+        // if (isPublished != null) { filter.isPublished = isPublished }
         let filtered = await blogModel.find(filter)
         if (filtered.length == 0) {
-            return res.status(400).send({ status: false, message: "No such data found" })
+            return res.status(404).send({ status: false, message: "No such data found" })
         } else {
 
             let deletedData = await blogModel.updateMany(filter, { isDeleted: true, deletedAt: new Date() }, { upsert: true, new: true })
             let deletedAt = new Date()
-            return res.status(200).send({ status: true, msg: "data deleted successfully", message: deletedData, deletedAt: deletedAt })
+            return res.status(200).send({ status: true, msg: "data deleted successfully" })
         }
     }
     catch (error) {

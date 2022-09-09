@@ -2,6 +2,7 @@ let jwt = require('jsonwebtoken')
 let mongoose = require('mongoose')
 const blogModel = require("../models/blogModel")
 
+//authentication part here:--
 const authentication = async function (req, res, next) {
     try {
         token = req.headers['x-api-key']
@@ -16,7 +17,7 @@ const authentication = async function (req, res, next) {
         res.status(500).send({ status: false, message: error.message })
     }
 }
-
+//authorization part here:--
 const authorization = async function (req, res, next) {
     try {
         let token = req.headers['x-api-key']

@@ -5,18 +5,20 @@ const authorController = require('../controllers/authorController')
 const blogController = require('../controllers/blogController')
 const mid = require('../middleware/mid1')
 
-//apis:-
+//author apis:-
+router.post('/authors', authorController.createAuthor)//createAuthors 
 
-router.post('/CreateAuthor', authorController.createAuthor)//createAuthors
-router.post("/createBlog", mid.authentication, blogController.createBlogs)//createBlogs
+//blog apis:-
+router.post("/blogs", mid.authentication, blogController.createBlogs)//createBlogs
 router.put("/blogs/:blogId", mid.authorization, blogController.updateBlog)//updateBlog
-router.delete("/deleteBlogs/:blogId", mid.authorization, blogController.deleteBlogs)//deleteBlogs
-router.delete("/deleteBlogs", mid.authorization1, blogController.deleteBlogsByFilter)//deleteBlogsByFilter
+router.delete("/blogs/:blogId", mid.authorization, blogController.deleteBlogs)//deleteBlogs
+router.delete("/blogs", mid.authorization1, blogController.deleteBlogsByFilter)//deleteBlogsByFilter
 
 
-//login
-router.post("/login", authorController.loginAuthor)
+//login api:-
+router.post("/login", authorController.loginAuthor)//login author
 
 //get apis:-
-router.get("/getBlog", mid.authentication, blogController.getBlogsData)
+router.get("/blogs", mid.authentication, blogController.getBlogsData)//get Blogs
+
 module.exports = router;

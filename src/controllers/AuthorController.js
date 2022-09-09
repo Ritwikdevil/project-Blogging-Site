@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const authorModel = require("../models/authorModel")
+
+//validation functions :---
 const isValid = function (value) {
     if (typeof value === 'undefined' || value === null) return false
     if (typeof value === 'string' && value.trim().length === 0) return false
@@ -39,11 +41,11 @@ const createAuthor = async function (req, res) {
         if (!isValidTitle(title)) return res.status(400).send({ status: false, msg: 'title should be among Mr,Mrs,Miss' })
 
         if (!isValid(email)) return res.status(400).send({ status: false, msg: 'email is required' })
-        if (!isValidEmail(email)) return res.status(400).send({ status: false, msg: 'email should be avalid email address' })
+        if (!isValidEmail(email)) return res.status(400).send({ status: false, msg: 'email should be a valid email address' })
 
 
         if (!isValid(password)) return res.status(400).send({ status: false, msg: 'password is required' })
-        if (!isValidPassword(password)) return res.status(400).send({ status: false, msg: 'Enter a valid password' })
+        if (!isValidPassword(password)) return res.status(400).send({ status: false, msg: 'password must be have  one uppercase, one lowercase and one special character or number' })
         let Data = await authorModel.findOne({ email: email })
         if (Data) return res.status(400).send({ status: false, msg: 'Duplicate email' })
 
@@ -55,7 +57,7 @@ const createAuthor = async function (req, res) {
     }
 }
 
-//login part here
+//login part here:-----
 const loginAuthor = async function (req, res) {
     try {
         let reqBody = req.body

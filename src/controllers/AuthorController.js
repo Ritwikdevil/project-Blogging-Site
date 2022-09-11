@@ -49,7 +49,7 @@ const createAuthor = async function (req, res) {
         let Data = await authorModel.findOne({ email: email })
         if (Data) return res.status(400).send({ status: false, msg: 'Duplicate email' })
 
-        //now create the author:- 
+        //now create the author:-  
         let savedData = await authorModel.create(requestBody)
         res.status(201).send({ msg: savedData })
     } catch (error) {

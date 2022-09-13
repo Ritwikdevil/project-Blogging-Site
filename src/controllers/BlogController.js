@@ -52,7 +52,7 @@ const createBlogs = async function (req, res) {
         }
         //data creation
         let savedData = await blogModel.create(requestBody)
-        res.status(201).send({ msg: savedData }) //successfull blog creation
+        res.status(201).send({ data: savedData, msg:"blogs created successfully"}) //successfull blog creation
     } catch (error) {
         res.status(500).send({ status: false, message: error.message })
     }
@@ -188,7 +188,7 @@ const deleteBlogsByFilter = async function (req, res) {
                 return res.status(400).send({ status: false, message: "Not a valid Author ID" })
             }
         }
-        let filter = { isDeleted: false, isPublished: false }
+        let filter = { isDeleted: false, isPublished: true }
         if (authorId != null) { filter.authorId = authorId }
         if (category != null) { filter.category = category }
         if (tags != null) { filter.tags = { $in: [tags] } }
